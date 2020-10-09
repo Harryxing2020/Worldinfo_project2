@@ -7,72 +7,79 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Porject3</title>
     <link rel="stylesheet" href="https://bootswatch.com/4/cerulean/bootstrap.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js">
+    </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/d3Style.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/map.css') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/map.css') }}">
 </head>
 
 <body>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12 jumbotron text-center">
-            <h1>Project 3</h1>
-            <p style = "font-size:20px">Project 3</p>
-        </div>
-    </div>
-<!-- ////////////////////////Chart/////////////////////////////////////// -->
-    <div class="row">
-        <div class="col-md-2">
-            <div class="well">
-                <h5>Select Options:</h5>
-                <select id="selDataset" onchange="optionChanged(this.value)"></select>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 jumbotron text-center">
+                <h1>Project 3</h1>
+                <p style="font-size:20px">Project 3</p>
             </div>
         </div>
-        <div class="col-md-12">
-            <div id="line"></div>
-        </div>
-    </div>
-
-    <div class="row">
+        <!-- ////////////////////////Chart/////////////////////////////////////// -->
+        <div class="row">
+            <div class="col-md-2">
+                <div class="well">
+                    <h5>Select Options:</h5>
+                    <select id="selDataset" onchange="optionChanged(this.value)"></select>
+                </div>
+            </div>
             <div class="col-md-12">
-                <div id="bar"></div>
-            </div>
-        
-    </div>
-<!-- /////////////////////////Map////////////////////////////////////// -->
-    <div class="row">
-
-        <div class="col-md-2">
-            <div class="well">
-                <h5>Select country:</h5>
-                <select id="selmap" onchange="mapChanged(this.value)"></select>
+                <div id="line"></div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-12">
-                <div id="map-title"><h3>Wolrd map</h3></div>
-                <div id="map"></div>
+            <div class="col-md-12 chart">
+                <div id="bar"></div>
             </div>
 
         </div>
+        <!-- /////////////////////////Map////////////////////////////////////// -->
+        <div class="row">
+
+            <div class="col-md-2">
+                <div class="well">
+                    <h5>Select country:</h5>
+                    <select id="selmap" onchange="mapChanged(this.value)"></select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="map-title">
+                        <h3>Wolrd map</h3>
+                    </div>
+                    <div id="map"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- /////////////////////////////////////////////////////////////// -->
+
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.0.0/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.js"></script>
 
-<!-- /////////////////////////////////////////////////////////////// -->
-   
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.0.0/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-<script src="{{ url_for('static', filename='js/config.js') }}"></script>
-<script src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
 
 
-<script src="{{ url_for('static', filename='js/countryChart.js') }}"></script>
-<script src="{{ url_for('static', filename='js/countyrMap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+
+
+
+    <script src="{{ url_for('static', filename='js/showChartNew.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/showMap.js') }}"></script>
 </body>
 
 </html>
