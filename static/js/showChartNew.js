@@ -1,119 +1,405 @@
-// svg container
-var height = 600;
-var width = 1000;
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function1: return the name for display
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function getDropDown(item) {
 
-// margins
-var margin = {
-    top: 50,
-    right: 50,
-    bottom: 50,
-    left: 50
-};
+    switch (item) {
+        case 'happiestScore':
+            return 'Happiest Score';
+            break;
+        case 'population':
+            return 'Population';
+            break;
+        case 'growthrate':
+            return 'Growth Rate';
+            break;
+        case 'countrysize':
+            return 'Area';
+            break;
+        case 'pop_den':
+            return 'Population Density';
+            break;
+        case 'gdp_per_capita':
+            return 'GDP Per Capita';
+            break;
 
-// chart area minus margins
-var chartHeight = height - margin.top - margin.bottom;
-var chartWidth = width - margin.left - margin.right;
+        default:
+            return '';
+    }
+}
 
-function buildCharts(country) {
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function2: return the name for option
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function getColumnsName(item) {
+
+    switch (item) {
+        case 'Happiest Score':
+            return 'happiestScore';
+            break;
+        case 'Population':
+            return 'population';
+            break;
+        case 'Growth Rate':
+            return 'growthrate';
+            break;
+        case 'Area':
+            return 'countrysize';
+            break;
+        case 'Population Density':
+            return 'pop_den';
+            break;
+        case 'GDP Per Capita':
+            return 'gdp_per_capita';
+            break;
+
+        default:
+            return '';
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function3: radio check value
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function getCheckedRadioValue(radioGroupName) {
+    var rads = document.getElementsByName(radioGroupName);
+    for (i = 0; i < rads.length; i++)
+        if (rads[i].checked)
+            return rads[i].value;
+    return null; // or undefined, or your preferred default for none checked
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function4: get the top 10 country by json Key
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function getTop10(sample, option, sortType) {
+    // option is key
+    var sortedList;
 
 
-    d3.json("/getCountryData")
-        .then(function (countrys) {
+    if (sortType === 0) {
 
-            console.log(countrys);
-            // data
-            var dataArray = countrys.map(country => country.happiestScore)
-            var dataCategories = countrys.map(country => country.country)
+        sortedList = sample.sort((a, b) => b[option] - a[option]);
 
-            console.log(dataArray)
-            console.log(dataCategories)
+    } else {
 
-            // create svg container
-            var svg = d3.select("body").append("svg")
-                .attr("height", height)
-                .attr("width", width);
+        sortedList = sample.sort((a, b) => a[option] - b[option]);
+    }
 
-            // shift everything over by the margins
-            var chartGroup = svg.append("g")
-                .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    // cut 10 json from list 
+    var showData = sortedList.slice(0, 10)
 
-            // scale y to chart height
-            var yScale = d3.scaleLinear()
-                .domain([0, d3.max(dataArray)])
-                .range([chartHeight, 0]);
-
-            // scale x to chart width
-            var xScale = d3.scaleBand()
-                .domain(dataCategories)
-                .range([0, chartWidth])
-                .padding(0.1);
-
-            // create axes
-            var yAxis = d3.axisLeft(yScale);
-            var xAxis = d3.axisBottom(xScale);
-
-            // set x to the bottom of the chart
-            chartGroup.append("g")
-                .attr("transform", `translate(0, ${chartHeight})`)
-                .call(xAxis);
-
-            // set y to the y axis
-            chartGroup.append("g")
-                .call(yAxis);
-
-            // Create the rectangles using data binding
-            var barsGroup = chartGroup.selectAll("rect")
-                .data(dataArray)
-                .enter()
-                .append("rect")
-                .attr("x", (d, i) => xScale(dataCategories[i]))
-                .attr("y", d => yScale(d))
-                .attr("width", xScale.bandwidth())
-                .attr("height", d => chartHeight - yScale(d))
-                .attr("fill", "green");
-
-            // Create the event listeners with transitions
-            barsGroup.on("mouseover", function () {
-                d3.select(this)
-                    .transition()
-                    .duration(500)
-                    .attr("fill", "red");
-            })
-                .on("mouseout", function () {
-                    d3.select(this)
-                        .transition()
-                        .duration(500)
-                        .attr("fill", "green");
-                });
-        })
-
+    return showData;
 
 }
 
-function init() {
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function5: build bar charts
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
+function buildBar(countryInfo, compartion) {
+
+
+    checkedValue = getCheckedRadioValue("type");
+    if (checkedValue === 'Ascent') {
+
+        showData = getTop10(countryInfo, compartion, 0); // ascent 
+
+
+    } else {
+
+        showData = getTop10(countryInfo, compartion, 1); //Descend
+
+    }
+
+
+    // showData = getTop10(countryInfo, compartion);
+
+    var traceDisplay1 = [{
+        // x value 
+        x: showData.map(item => item[compartion]).reverse(),
+        // y value 
+        y: showData.map(item => item.country).reverse(),
+        // set y value as the lable 
+        labels: showData.map(item => item.country).reverse(),
+        //show label for text display 
+        text: showData.map(item => item[compartion]).reverse(),
+        //show bar chart
+        type: "bar",
+        //set the orient
+        orientation: "h",
+
+        marker: {
+            color: checkedValue === 'Ascent' ? 'blue' : 'red',
+            opacity: 0.7,
+        }
+
+    }];
+    // Bar layout
+    var disPlayLayout1 = {
+        title: { text: (checkedValue === 'Ascent' ? "The top 10 country for " : "The last 10 country for ") + getDropDown(compartion) },
+        autosize: true,
+        // height: 400,
+        // width: 400,
+        margin: {
+            l: 100,
+            r: 10,
+            b: 20,
+            t: 30,
+            pad: 0
+        },
+        showlegend: false
+    };
+    //Plotly to plot bar chart layout 
+    Plotly.newPlot("bar", traceDisplay1, disPlayLayout1, { displayModeBar: false });
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function6: bubble chart
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function showbubbleChart(countryInfo, compartion) {
+
+
+    checkedValue = getCheckedRadioValue("type");
+
+    if (checkedValue === 'Ascent') {
+
+        showData = getTop10(countryInfo, compartion, 0); // ascent 
+
+    } else {
+
+        showData = getTop10(countryInfo, compartion, 1); //Descend
+
+    }
+
+
+    var scaleMax = d3.max(showData.map(item => item[compartion]))
+
+    showBubbleSize = showData.map(item => item[compartion] / scaleMax * 50)
+
+
+
+    //create a trace bubble
+    var traceDisplay2 = [{
+        x: showData.map(item => item.country), //X axis, show experiment ID
+        y: showData.map(item => item[compartion]), //Y axis, show experiment result
+        text: showData.map(item => item[compartion]), // show dynamic info on the bar
+
+        textposition: 'auto',
+        mode: 'markers',
+        marker: {
+            size: showBubbleSize, // the size of the bubble by the value of experiment 
+            color: showBubbleSize
+            // colorscale: "Earth"
+        }
+
+    }];
+
+    // BUbble chart layout 
+    var disPlayLayout2 = {
+        autosize: true,
+        xaxis: { title: "Country" },
+        title: (checkedValue === 'Ascent' ? "The top 10 country for " : "The last 10 country for ") + getDropDown(compartion),
+        config: {
+            'displayModeBar': true
+        }
+    };
+    // bubble chart layout
+    Plotly.newPlot('bubble', traceDisplay2, disPlayLayout2);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function7: build box chart
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function buildBox(newOption) {
+
+    d3.json(`/getCountryData`, function (countryInfo) {
+
+        var trace1 = {
+            y: countryInfo.map(item => item[newOption]),
+            boxpoints: "all",
+            text: countryInfo.map(item => item.country),
+            type: "box",
+            labels: getDropDown(newOption)
+        };
+
+        var data = [trace1];
+
+        var layout = {
+            title: `${getDropDown(newOption)} box plot`
+        };
+
+        Plotly.newPlot("boxChart", data, layout);
+
+    });
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function8: show country info
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function showInfo(countryName) {
+    //lookup the data by experiment name 
+    d3.json(`/metadata/${countryName}`, function (countryIno) {
+
+        console.log(countryIno)
+        // selection variable in order to update info
+        var sample_metadata = d3.select("#sample-metadata");
+        // clear the html
+        sample_metadata.html("");
+
+        var nf = Intl.NumberFormat();
+
+        var row = sample_metadata.append("h4");
+        row.text(`Country: ${countryIno["Country Name"]}`);
+        row = sample_metadata.append("p");
+        row.text(`GDP per capita: $${nf.format(countryIno["GDP per capita"])}`);
+        row = sample_metadata.append("p");
+        row.text(`Population: ${nf.format(countryIno["Population"])}`);
+        row = sample_metadata.append("p");
+        row.text(`Growth Rate: ${nf.format(countryIno["Growth Rate"] * 100)}%`);
+        row = sample_metadata.append("p");
+        row.text(`Area: ${nf.format(countryIno["Area"])} km²`);
+        row = sample_metadata.append("p");
+        row.text(`Population Density: ${nf.format(countryIno["Population Density"])}km²`);
+
+
+        // Use Object.entries to add each key and value pair to the panel
+        // Object.entries(showJson).forEach(([key, value]) => {
+        //     var row = sample_metadata.append("p");
+        //     row.text(`${key}: ${value}`);
+        // })
+    })
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function9: for the licener, when you click submit
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// Submit Button handler
+function handleSubmit() {
+    // Prevent the page from refreshing
+    d3.event.preventDefault();
+    // Select the input value from the form
+    var countryInput = d3.select("#countryInput").node().value;
+    // clear the input value
+    d3.select("#countryInput").node().value = "";
+
+    d3.json(`/metafindcountry/${countryInput}`, function (findCountry) {
+
+        console.log(findCountry["findIt"])
+
+        if (findCountry["findIt"] === 1) {
+            showInfo(countryInput)
+        } else {
+            alert("Sorry, Country not found.");
+        }
+
+
+    })
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function10: when dropdown option change for country name 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function counrtyChanged(countryName) {
+    showInfo(countryName);
+
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function11: when dropdown option change for option
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function optionChanged(column) {
+
+    var newOption = getColumnsName(column);
+
+    buildCharts(newOption);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function12 : when dropdown option change for option
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function optionBoxChanged(column) {
+
+    var newOption = getColumnsName(column);
+
+    buildBox(newOption);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function13: build all charts
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function buildCharts(compartion) {
+
+    d3.json(`/getCountryData`, function (countryInfo) {
+        // Build bar chart
+        buildBar(countryInfo, compartion);
+        // build bubble Chart
+        showbubbleChart(countryInfo, compartion);
+        //build box Chart
+        buildBox(compartion);
+    });
+
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function14: init the page when loading data 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function init() {
     // Set up the dropdown menu
     // Grab a reference to the dropdown select element
-    var selector = d3.select("#selDataset");
-    // Use the list of sample names to populate the select options
+    var selector1 = d3.select("#selDataset");
 
-    d3.json("/getCountryData")
-        .then(function (countrys) {
-            countrys.forEach((country) => {
-                selector
-                    .append("option")
-                    .text(country.country)
-                    .property("value", country.country);
-            });
-            buildCharts(countrys[0].country);
+    var selector3 = d3.select("#selBoxDataset");
+
+    // Use the list of sample names to populate the select options
+    d3.json("/getCompartionList", function (compartion) {
+
+        var dropcontent = compartion.map(item => getDropDown(item));
+
+        dropcontent.forEach((instance) => {
+            selector1
+                .append("option")
+                .text(instance)
+                .property("value", instance);
         });
 
+        dropcontent.forEach((instance) => {
 
-}
+            if (instance === "Happiest Score" || instance === "Growth Rate" || instance === "GDP Per Capita") {
+                selector3
+                    .append("option")
+                    .text(instance)
+                    .property("value", instance);
+            }
 
-function optionChanged(country) {
-    // Fetch new data each time a new state is selected
-    buildCharts(country);
+        });
+
+        const defaultCompartion = compartion[0];
+
+        buildCharts(defaultCompartion);
+
+       
+    });
+
+    var selector2 = d3.select("#selCountry");
+    d3.json("/getCountryName", function (countryName) {
+
+        countryName.forEach((instance) => {
+            selector2
+                .append("option")
+                .text(instance)
+                .property("value", instance);
+        });
+        showInfo(countryName[0]);
+    });
+
+    d3.select("#submit").on("click", handleSubmit);
+
+
 }
 
 init();

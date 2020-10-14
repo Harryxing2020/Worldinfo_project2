@@ -5,81 +5,204 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Porject3</title>
     <link rel="stylesheet" href="https://bootswatch.com/4/cerulean/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js">
-    </script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/d3Style.css')}}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="static/css/d3Style.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/map.css') }}">
+
+    <title>Team 4 Porject2</title>
 </head>
 
 <body>
 
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <a class="navbar-brand" href="/bubblechart">Bubble Chart</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <a class="navbar-brand" href="/map">GeoMap</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <a class="navbar-brand" href="/loaddata">update Data</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
     <div class="container">
+
+        <!-- 
+///////////////////////////////////////////////////////////////////////////// -->
         <div class="row">
-            <div class="col-md-12 jumbotron text-center">
+            <div class="col-md-12 text-center">
                 <h1>Project 3</h1>
-                <p style="font-size:20px">Project 3</p>
+                <p style="font-size:20px">Use the interactive charts below to explore the dataset</p>
             </div>
         </div>
-        <!-- ////////////////////////Chart/////////////////////////////////////// -->
+        <!-- 
+///////////////////////////////////////////////////////////////////////////// -->
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-12 text-left">
+                <h3>1. World leaflet map</h3>
+                <div id="map" style="height:500px; width:1000px"></div>
+            </div>
+        </div>
+        <hr>
+        <!-- 
+///////////////////////////////////////////////////////////////////////////// -->
+        <div class="row col-md-12">
+            <h3>2. World bubble chart</h3>
+            <div class="chartBubble">
+            </div>
+        </div>
+        <!-- 
+
+///////////////////////////////////////////////////////////////////////////// -->
+        <div class="row col-md-12">
+            <h3>3. Box Chart</h3>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-3">
                 <div class="well">
-                    <h5>Select Options:</h5>
-                    <select id="selDataset" onchange="optionChanged(this.value)"></select>
+                    <h5>Select Box Option:</h5>
+                    <select id="selBoxDataset" onchange="optionBoxChanged(this.value)"></select>
                 </div>
             </div>
-            <div class="col-md-12">
-                <div id="line"></div>
+            <div class="col-md-7">
+                <div id="boxChart"></div>
             </div>
         </div>
+        <!-- 
 
-        <div class="row">
-            <div class="col-md-12 chart">
+///////////////////////////////////////////////////////////////////////////// -->
+
+        <!-- 
+///////////////////////////////////////////////////////////////////////////// -->
+        <div class="row col-md-12">
+            <h3>4. Search for a country info</h3>
+        </div>
+
+        <div class="row col-md-12">
+            <div class="col-md-4">
+                <div class="well">
+                    <label>Select country: </label>
+                    <select id="selCountry" onchange="counrtyChanged(this.value)"></select>
+                </div>
+
+                <form class="well btn btn-default">
+                    <label for="countryInput">Counrty: </label>
+                    <input type="text" id="countryInput" placeholder="Enter country name">
+                    <button id="submit" type="submit">Search</button>
+                </form>
+
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Country info</h3>
+                    </div>
+                    <div id="sample-metadata" class="panel-body"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- 
+///////////////////////////////////////////////////////////////////////////// -->
+
+        <div class="row col-md-12">
+            <h3>5. World bar chart</h3>
+        </div>
+
+        <div class="row col-md-12">
+            <div class="col-md-3">
+                <div class="well">
+                    <h5>Select Option:</h5>
+                    <select id="selDataset" onchange="optionChanged(this.value)"></select>
+                </div>
+                <br>
+                <input type="radio" value="Ascent" name="type" checked="yes" />
+                <label>Ascent </label>
+                <input type="radio" value="Descend" name="type" />
+                <label>Descend</label>
+
+            </div>
+
+            <div class="col-md-9">
                 <div id="bar"></div>
             </div>
 
         </div>
-        <!-- /////////////////////////Map////////////////////////////////////// -->
-        <div class="row">
+
+        <div class="row col-md-12">
 
             <div class="col-md-2">
-                <div class="well">
-                    <h5>Select country:</h5>
-                    <select id="selmap" onchange="mapChanged(this.value)"></select>
-                </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="map-title">
-                        <h3>Wolrd map</h3>
-                    </div>
-                    <div id="showMap"></div>
-                </div>
-
+            <div class="col-md-10">
+                <div id="bubble"></div>
             </div>
+
         </div>
 
-        <!-- /////////////////////////////////////////////////////////////// -->
-
     </div>
+
+
+
+
+    <!-- 
+///////////////////////////////////////////////////////////////////////////// -->
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.0.0/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+
+
+    <script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"
+        integrity="sha512-tAGcCfR4Sc5ZP5ZoVz0quoZDYX5aCtEm/eu1KhSLj2c9eFrylXZknQYmxUssFaVJKvvc0dJQixhGjG2yXWiV9Q=="
+        crossorigin=""></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
+        integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+        crossorigin="" />
+
 
 
     <script src="{{ url_for('static', filename='js/config.js') }}"></script>
-
-
-
     <script src="{{ url_for('static', filename='js/showChartNew.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/mapNew.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/showmap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bubblechart.js') }}"></script>
+
+
 </body>
 
 </html>
