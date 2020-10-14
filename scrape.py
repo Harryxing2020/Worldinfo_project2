@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
     # executable_path = {'executable_path': ChromeDriverManager().install()}
     # return Browser("chrome", **executable_path, headless=False)
 
-def scrapeData():
+def scrapeData(conn):
     #inital the connection to chrome browser
     # browser = init_browser()
     # Read the GDP per capita data from wikipedia
@@ -64,10 +64,10 @@ def scrapeData():
     populcation_data = populcation_data.dropna()
 
     # create json list
-    engine = create_engine('sqlite:///db/worldinfo.sqlite', echo=False)
-    sqlite_connection = engine.connect()
+    # engine = create_engine('sqlite:///db/worldinfo.sqlite', echo=False)
+    # sqlite_connection = engine.connect()
     sqlite_table = "worldinfo"
-    populcation_data.to_sql(sqlite_table, sqlite_connection, if_exists='replace')
+    populcation_data.to_sql(sqlite_table, conn, if_exists='replace')
 
 
 

@@ -94,15 +94,13 @@ def metafindcountry(country):
 def load_map():
     return render_template("geomap.html")
 
-
-
 @app.route("/bubblechart")
 def load_bubble():
     return render_template("bubblechart.html")
 
 @app.route("/loaddata")
 def load_data():
-    scrape.scrapeData()
+    # scrape.scrapeData(conn)
     return render_template("index.html")
 
 

@@ -157,8 +157,6 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
             popupString = `${d.country}<hr>${label1}${nf.format(d[chosenXAxis])}<hr>${label2}${label2Output}`
 
-            console.log("tag==============",popupString);
-
             return popupString;
         });
 
