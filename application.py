@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 from flask import Flask, jsonify, render_template
 
-app = Flask(__name__)
+application = app = Flask(__name__)
 #################################################
 # Database Setup
 #################################################
@@ -49,8 +49,6 @@ def comparation():
 def getcounrtyname():
 
     country_name = worldinfoDF.loc[:,"country"].tolist()
-    print(country_name)
-    
 
     return jsonify(country_name)
 
@@ -72,6 +70,7 @@ def getCountryData(country):
 
     return jsonify(countryInfo)
 
+
 @app.route("/metafindcountry/<country>")
 def metafindcountry(country):
 
@@ -79,19 +78,41 @@ def metafindcountry(country):
 
     return jsonify({"findIt": isEmpty})
 
+@app.route("/metafindselectcountries/<countryList>")
+def metafindselectcountries(countryList):
+    listString = countryList.split(',')
+    selectCountry = worldinfoDF[worldinfoDF['country'].isin(listString)]
+    select_info = []
+    for index, row in selectCountry.iterrows():
+        populcation_dict = {
+            "country": row["country"],
+            "GDP per Capita": row["gdp_per_capita"],
+            "population": row["population"],
+            "Growth Rate": row["growthrate"],
+            "countrysize": row["countrysize"],
+            "Populcation Density": row["pop_den"],
+            "Happiest Score": row["happiestScore"]
+        }
+
+
+        select_info.append(populcation_dict)
+
+ 
+    return jsonify(select_info)
+
+
 @app.route("/map")
 def load_map():
     return render_template("geomap.html")
 
-@app.route("/bubblechart")
-def load_bubble():
-    return render_template("bubblechart.html")
+@app.route("/showdata")
+def showdata():
+    return render_template("showdata.html")
 
 @app.route("/loaddata")
 def load_data():
     # scrape.scrapeData(conn)
     return render_template("index.html")
-
 
 if __name__ == "__main__":
     app.run(debug=True)

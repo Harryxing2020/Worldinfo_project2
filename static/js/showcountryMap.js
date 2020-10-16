@@ -1,29 +1,72 @@
-function buildMaps(countrys_info) {
+var myMap = L.map("map2", {
+  center: [65.800720, 26.489941],
+  zoom: 4
+});
+
+var worldGeoMap;
+
+
+function buildMaps2(countrys_info) {
 
   d3.json("/static/data/countries.geo.json", function (countryMapData) {
-    updataJsonData(countryMapData, countrys_info);
-    createFeatures(countryMapData);
+    updataJsonData2(countryMapData, countrys_info);
+
+    worldGeoMap = countryMapData;
+    createFeatures2(countryMapData);
   });
 }
 
-function init() {
+function changeCountry(countryName) {
+
+
+
+  function getName(countryGeo) {
+
+    if ((countryGeo.properties.admin === countryName) || ((countryGeo.properties.admin === 'United States of America') && (countryName === 'United States')))
+      return true;
+    return false;
+  }
+  // console.log(worldGeoMap.features.filter(getName));
+
+  // console.log(worldGeoMap.features.filter(getName)[0].geometry);
+
+  if (worldGeoMap.features.filter(getName).length > 0) {
+    address = worldGeoMap.features.filter(getName)[0].geometry.coordinates[0][0];
+
+    // console.log(address)
+    if (address.length > 2) {
+      address = address[0]
+    }
+
+    console.log("-----------4-----------------------------")
+    // myMap.setView(new L.LatLng(address[1], address[0]), 3);
+
+    myMap.setView({lat:address[1], lng:address[0]}, 3)
+  }
+
+}
+
+
+function init2() {
 
   d3.json("/getCountryData", function (countrys_info) {
-    buildMaps(countrys_info);
+    buildMaps2(countrys_info);
   });
+
+
 }
 
-init();
+init2();
 
 ///////////////////////////////////////////////////////////////////////
 // function1: load data  
 ///////////////////////////////////////////////////////////////////////
-function updataJsonData(countryMapData, countrys_info) {
+function updataJsonData2(countryMapData, countrys_info) {
 
   countryMapData.features.forEach(countryInfo => {
 
     var varcountryName = countryInfo.properties.admin
-    function findCountry(country) {
+    function findCountry2(country) {
       if ((country.country.toLowerCase() === varcountryName.toLowerCase()) ||
         ((varcountryName === 'United States of America') && (country.country === 'United States'))) {
 
@@ -39,7 +82,7 @@ function updataJsonData(countryMapData, countrys_info) {
       }
     }
     // filter() uses the custom function as its argument
-    countrys_info.filter(findCountry);
+    countrys_info.filter(findCountry2);
   })
 
 }
@@ -116,12 +159,7 @@ function addLegend() {
 ///////////////////////////////////////////////////////////////////////
 // function4: create circles and tectonicplates
 ///////////////////////////////////////////////////////////////////////
-function createFeatures(countryData) {
-
-  var myMap = L.map("map", {
-    center: [24.699175, 7.118681],
-    zoom: 2
-  });
+function createFeatures2(countryData) {
 
   L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
     attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
@@ -131,6 +169,7 @@ function createFeatures(countryData) {
     id: "mapbox/streets-v11",
     accessToken: API_KEY
   }).addTo(myMap);
+
 
 
   // Create a GeoJSON layer containing the features array on the earthquakeData object
@@ -190,7 +229,7 @@ function createFeatures(countryData) {
     }).addTo(myMap);
 
 
-  createMap(choroplethMap, myMap)
+  // createMap(choroplethMap, myMap)
 
 }
 

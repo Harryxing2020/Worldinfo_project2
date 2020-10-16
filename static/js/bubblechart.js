@@ -318,9 +318,13 @@ function makeResponsive() {
 
 
     //select svg area anchor 
-    var svgArea = d3.select("body").select("svg");
+    // var svgArea = d3.select("body").select("svg");
+
+    var svgArea = d3.select(".chartBubble").select("svg");
+
     // if svg exists, windows will clear the content
     if (!svgArea.empty()) {
+        
         svgArea.remove();
     }
 

@@ -213,38 +213,69 @@ function showbubbleChart(countryInfo, compartion) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // function7: build box chart
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-function buildBox(newOption) {
+function buildBox(newOption, displaySwitch) {
 
-    d3.json(`/getCountryData`, function (countryInfo) {
+    if ((newOption === "gdp_per_capita") && !displaySwitch) {
 
-        var trace1 = {
-            y: countryInfo.map(item => item[newOption]),
-            boxpoints: "all",
-            text: countryInfo.map(item => item.country),
-            type: "box",
-            labels: getDropDown(newOption)
-        };
 
-        var data = [trace1];
+        Plotly.purge("boxChart");
 
-        var layout = {
-            title: `${getDropDown(newOption)} box plot`
-        };
 
-        Plotly.newPlot("boxChart", data, layout);
 
-    });
+    } else if ((newOption === "growthrate") && !displaySwitch) {
+        Plotly.purge("boxChart2");
+    } else if ((newOption === "happiestScore") && !displaySwitch) {
+        Plotly.purge("boxChart3");
 
+    } else {
+        d3.json(`/getCountryData`, function (countryInfo) {
+
+            var trace1 = {
+                y: countryInfo.map(item => item[newOption]),
+                boxpoints: "all",
+                text: countryInfo.map(item => item.country),
+                type: "box",
+                labels: getDropDown(newOption)
+            };
+
+            var data = [trace1];
+
+            var layout = {
+                title: `${getDropDown(newOption)} box plot`
+            };
+
+            switch (newOption) {
+                case 'happiestScore':
+                    Plotly.newPlot("boxChart3", data, layout);
+
+                    break;
+                case 'growthrate':
+                    Plotly.newPlot("boxChart2", data, layout);
+                    break;
+                case 'gdp_per_capita':
+                    Plotly.newPlot("boxChart", data, layout);
+                    break;
+                default:
+                    return '';
+            }
+
+
+
+        });
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // function8: show country info
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 function showInfo(countryName) {
+
+
+    console.log("--------------5-----------------------");
     //lookup the data by experiment name 
     d3.json(`/metadata/${countryName}`, function (countryIno) {
 
-        console.log(countryIno)
+
         // selection variable in order to update info
         var sample_metadata = d3.select("#sample-metadata");
         // clear the html
@@ -289,10 +320,16 @@ function handleSubmit() {
 
     d3.json(`/metafindcountry/${countryInput}`, function (findCountry) {
 
-        console.log(findCountry["findIt"])
+
 
         if (findCountry["findIt"] === 1) {
-            showInfo(countryInput)
+
+ 
+            console.log("--------2------------")
+
+            changeCountry(countryInput);
+            showInfo(countryInput);
+
         } else {
             alert("Sorry, Country not found.");
         }
@@ -305,8 +342,10 @@ function handleSubmit() {
 // function10: when dropdown option change for country name 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 function counrtyChanged(countryName) {
+    console.log("--------1------------")
+    changeCountry(countryName);
     showInfo(countryName);
-
+ 
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // function11: when dropdown option change for option
@@ -322,12 +361,12 @@ function optionChanged(column) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // function12 : when dropdown option change for option
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-function optionBoxChanged(column) {
+// function optionBoxChanged(column) {
 
-    var newOption = getColumnsName(column);
+//     var newOption = getColumnsName(column);
 
-    buildBox(newOption);
-}
+//     buildBox(newOption);
+// }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -341,7 +380,13 @@ function buildCharts(compartion) {
         // build bubble Chart
         showbubbleChart(countryInfo, compartion);
         //build box Chart
-        buildBox(compartion);
+
+        buildBox('gdp_per_capita', true)
+        // buildBox('growthrate', true);
+        // buildBox('happiestScore', true);
+
+
+
     });
 
 }
@@ -352,8 +397,6 @@ function init() {
     // Set up the dropdown menu
     // Grab a reference to the dropdown select element
     var selector1 = d3.select("#selDataset");
-
-    var selector3 = d3.select("#selBoxDataset");
 
     // Use the list of sample names to populate the select options
     d3.json("/getCompartionList", function (compartion) {
@@ -367,22 +410,13 @@ function init() {
                 .property("value", instance);
         });
 
-        dropcontent.forEach((instance) => {
 
-            if (instance === "Happiest Score" || instance === "Growth Rate" || instance === "GDP Per Capita") {
-                selector3
-                    .append("option")
-                    .text(instance)
-                    .property("value", instance);
-            }
-
-        });
 
         const defaultCompartion = compartion[0];
 
         buildCharts(defaultCompartion);
 
-       
+
     });
 
     var selector2 = d3.select("#selCountry");
@@ -395,6 +429,7 @@ function init() {
                 .property("value", instance);
         });
         showInfo(countryName[0]);
+
     });
 
     d3.select("#submit").on("click", handleSubmit);
@@ -402,4 +437,33 @@ function init() {
 
 }
 
+
+
+
 init();
+
+function checkboxChanged1(value) {
+
+
+    buildBox('gdp_per_capita', value)
+}
+function checkboxChanged2(value) {
+
+    buildBox('growthrate', value);
+}
+
+function checkboxChanged3(value) {
+
+    buildBox('happiestScore', value);
+}
+
+
+
+
+
+
+
+
+
+
+
