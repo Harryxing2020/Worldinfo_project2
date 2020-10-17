@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <title>Country Data</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+
   <link rel="stylesheet" href="https://bootswatch.com/4/cerulean/bootstrap.min.css">
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -20,55 +20,90 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/">Home</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
 
 
     <a class="navbar-brand" href="/map">GeoMap</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
     <a class="navbar-brand" href="/showdata">Show Country Data</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
 
 
-</nav>
+    <a class="navbar-brand" href="https://github.com/Harryxing2020/project3">GitHub</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
 
 
-    <div class="container">
-      <div class="row margin-top-50">
 
-        <div class="col-md-12">
-          <div id="table-area" class="">
-            <table id="ufo-table" class="table table-striped">
-              <thead>
-                <tr>
-                  <th class="table-head">country</th>
-                  <th class="table-head">Area</th>
-                  <th class="table-head">GDP per Capita</th>
-                  <th class="table-head">Population growth rate</th>
-                  <th class="table-head">Happiest Score</th>
-                  <th class="table-head">Population Density</th>
-                  <th class="table-head">Population</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
+  </nav>
+
+
+  <div class="container">
+    <!-- <div class="row margin-top-50"> -->
+
+
+    <div class="row col-md-12">
+
+      <div class="row col-md-3">
+
+        <label for="subject"></label>
+        <select class="form-control" id="critial" name="subject1" size="1">
+        </select>
+      </div>
+
+      <div class="row col-md-1">
+        <select class="form-control" id="fomula" name="shape" size="1" value="">
+          <option value="morethan">></option>
+          <option value="equal">=</option>
+          <option value="lessthan">
+            < </option>
+        </select>
+      </div>
+
+
+      <div class="row col-md-3">
+        <input class="form-control" id="inputvalue" type="text" placeholder="">
+      </div>
+      <div class="row col-md-1">
+        <button id="filter-btn-filter" type="submit" class="btn btn-default">Search </button>
       </div>
     </div>
 
+      <div class="row col-md-12">
+        <div id="table-area" class="">
+          <table id="ufo-table" class="table table-striped">
+            <thead>
+              <tr>
+              </tr>
+            </thead>
+            <thead>
+
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+
+
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.11.0/d3.js"></script>
   <script src="static/js/showdata.js"></script>
+  <!-- <script src="static/js/showChartNew.js"></script> -->
 </body>
 
 </html>

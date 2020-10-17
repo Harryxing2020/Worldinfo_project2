@@ -271,7 +271,7 @@ function buildBox(newOption, displaySwitch) {
 function showInfo(countryName) {
 
 
-    console.log("--------------5-----------------------");
+
     //lookup the data by experiment name 
     d3.json(`/metadata/${countryName}`, function (countryIno) {
 
@@ -342,7 +342,7 @@ function handleSubmit() {
 // function10: when dropdown option change for country name 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 function counrtyChanged(countryName) {
-    console.log("--------1------------")
+
     changeCountry(countryName);
     showInfo(countryName);
  
