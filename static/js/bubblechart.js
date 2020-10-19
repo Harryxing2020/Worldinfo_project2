@@ -1,12 +1,15 @@
+////////////////////////////////////////////////////
+// function 0: sort data by population and get the first 50 items
+////////////////////////////////////////////////////
+
 function getTop50(sample) {
     var sortedList;
+    //sort data 
     sortedList = sample.sort((a, b) => b.population - a.population);
+    //get the first 50 items
     var showData = sortedList.slice(0, 50)
     return showData;
 }
-
-
-
 
 ////////////////////////////////////////////////////
 // define global varable 
@@ -28,8 +31,6 @@ var margin = {
 // function 1: updating x-scale var upon click on axis label
 ////////////////////////////////////////////////////
 function xScale(chosenXAxis) {
-
-
     // create scales
     var xLinearScale = d3.scaleLinear()
         .domain([d3.min(censusData, d => d[chosenXAxis]) * 0.9,
@@ -220,9 +221,7 @@ function setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel) {
             ageRateLabel
                 .classed("active", false)
                 .classed("inactive", true);
-            // incomeLabel
-            //     .classed("active", false)
-            //     .classed("inactive", true);
+
             break;
         case 'pop_den':
             povertyRateLabel
@@ -231,9 +230,6 @@ function setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel) {
             ageRateLabel
                 .classed("active", true)
                 .classed("inactive", false);
-            // incomeLabel
-            //     .classed("active", false)
-            //     .classed("inactive", true);
             break;
         case 'countrysize':
             povertyRateLabel
@@ -242,9 +238,6 @@ function setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel) {
             ageRateLabel
                 .classed("active", false)
                 .classed("inactive", true);
-            // incomeLabel
-            //     .classed("active", true)
-            //     .classed("inactive", false);
             break;
         default:
             povertyRateLabel
@@ -253,9 +246,6 @@ function setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel) {
             ageRateLabel
                 .classed("active", false)
                 .classed("inactive", true);
-            // incomeLabel
-            //     .classed("active", false)
-            //     .classed("inactive", true);
     }
 }
 ////////////////////////////////////////////////////
@@ -270,9 +260,6 @@ function setActiveYTag(chosenYAxis, healthcareLable, smokesLable) {
             healthcareLable
                 .classed("active", true)
                 .classed("inactive", false);
-            // obesityLable
-            //     .classed("active", false)
-            //     .classed("inactive", true);
             smokesLable
                 .classed("active", false)
                 .classed("inactive", true);
@@ -281,9 +268,6 @@ function setActiveYTag(chosenYAxis, healthcareLable, smokesLable) {
             healthcareLable
                 .classed("active", false)
                 .classed("inactive", true);
-            // obesityLable
-            //     .classed("active", true)
-            //     .classed("inactive", false);
             smokesLable
                 .classed("active", false)
                 .classed("inactive", true);
@@ -292,9 +276,6 @@ function setActiveYTag(chosenYAxis, healthcareLable, smokesLable) {
             healthcareLable
                 .classed("active", false)
                 .classed("inactive", true);
-            // obesityLable
-            //     .classed("active", false)
-            //     .classed("inactive", true);
             smokesLable
                 .classed("active", true)
                 .classed("inactive", false);
@@ -303,9 +284,6 @@ function setActiveYTag(chosenYAxis, healthcareLable, smokesLable) {
             healthcareLable
                 .classed("active", true)
                 .classed("inactive", false);
-            // obesityLable
-            //     .classed("active", false)
-            //     .classed("inactive", true);
             smokesLable
                 .classed("active", false)
                 .classed("inactive", true);
@@ -317,24 +295,15 @@ function setActiveYTag(chosenYAxis, healthcareLable, smokesLable) {
 function makeResponsive() {
 
 
-    //select svg area anchor 
-    // var svgArea = d3.select("body").select("svg");
-
     var svgArea = d3.select(".chartBubble").select("svg");
-
-    // if svg exists, windows will clear the content
+    // clear the svg
     if (!svgArea.empty()) {
         
         svgArea.remove();
     }
 
-    // init the range size
-    // svgHeight = 600;
-    // svgWidth = 1000;
-
     svgHeight = (window.innerHeight * 3/4 );
     svgWidth = (window.innerWidth *3 / 4 );
-    //setup the margin size for the chart
 
 
     //actual size of the chart
@@ -358,7 +327,7 @@ function makeResponsive() {
     ////////////////////////////////////////////////////
     d3.json("/getCountryData", function (census) {
 
-
+        //get the top 50 population countries
         census = getTop50(census);
 
         census.forEach(function (data) {
@@ -424,13 +393,6 @@ function makeResponsive() {
             .classed("inactive", true)
             .text("Population Density");
 
-        // var incomeLabel = xlabelsGroup.append("text")
-        //     .attr("x", 0)
-        //     .attr("y", 60)
-        //     .attr("value", "countrysize") // value to grab for event listener
-        //     .classed("inactive", true)
-        //     .text("Area km2");
-
         // Create group for three y-axis labels
         // turn 90 digree 
         var ylabelsGroup = chartGroup.append("g")
@@ -443,14 +405,6 @@ function makeResponsive() {
             .attr("value", "happiestScore") // value to grab for event listener
             .classed("active", true)
             .text("Happiest Score");
-
-        // var obesityLable = ylabelsGroup.append("text")
-        //     .attr("y", 0 - margin.left)
-        //     .attr("x", 0 - (height / 2))
-        //     .attr("dy", "3em")
-        //     .attr("value", "population") // value to grab for event listener
-        //     .classed("inactive", true)
-        //     .text("population");
 
         var smokesLable = ylabelsGroup.append("text")
             .attr("y", 0 - margin.left)
@@ -468,13 +422,8 @@ function makeResponsive() {
 
         //if windows size changes, the X and Y tag select is different from defaut selection
         if (!((chosenXAxis === "gdp_per_capita") && (chosenYAxis === "happiestScore"))) {
-            // setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel, incomeLabel);
-            // setActiveYTag(chosenYAxis, healthcareLable, obesityLable, smokesLable);
-
             setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel);
             setActiveYTag(chosenYAxis, healthcareLable, smokesLable);
-
-
         }
 
 
@@ -536,9 +485,6 @@ function makeResponsive() {
     })
 
 }
-
-
-
 
 //initial default page
 makeResponsive();
