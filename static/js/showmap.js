@@ -1,19 +1,3 @@
-function buildMaps(countrys_info) {
-
-  d3.json("/static/data/countries.geo.json", function (countryMapData) {
-    updataJsonData(countryMapData, countrys_info);
-    createFeatures(countryMapData);
-  });
-}
-
-function init() {
-
-  d3.json("/getCountryData", function (countrys_info) {
-    buildMaps(countrys_info);
-  });
-}
-
-init();
 
 ///////////////////////////////////////////////////////////////////////
 // function1: load data  
@@ -246,3 +230,31 @@ function createMap(choroplethMap, myMap) {
   ///////////////////////////////////////////////////////////////////////
   // function5: end
   ///////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////
+// function5: build the map 
+///////////////////////////////////////////////////////////////////////
+  function buildMaps(countrys_info) {
+
+    d3.json("/static/data/countries.geo.json", function (countryMapData) {
+      updataJsonData(countryMapData, countrys_info);
+      createFeatures(countryMapData);
+    });
+  }
+  
+
+///////////////////////////////////////////////////////////////////////
+// function6: load data from flask 
+///////////////////////////////////////////////////////////////////////
+  function init() {
+  
+    d3.json("/getCountryData", function (countrys_info) {
+      buildMaps(countrys_info);
+    });
+  }
+
+///////////////////////////////////////////////////////////////////////
+// program entrance 
+///////////////////////////////////////////////////////////////////////
+  init();
+  

@@ -1,3 +1,5 @@
+//create Json list for looking up country info continental 
+
 var continental = {
   "EUROPE": ["Albania", "Austria", "Belgium", "Bulgaria", "Croatia", "Czech Republic", "Denmark", "Estonia", "Finland", "France", "Greece", "Hungary", "Iceland", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Macedonia", "Malta", "Montenegro", "Netherlands", "Norway", "Poland", "Russia", "Serbia", "Slovakia", "Spain", "Sweden", "Switzerland", "Ukraine"],
   "AFRICA": ["Algeria", "Angola", "Botswana", "Cameroon", "Chad", "Congo", "Egypt", "Ethiopia", "Ghana", "Kenya", "Libya", "Madagascar", "Mali", "Mauritania", "Morocco", "Mozambique", "Namibia", "Niger", "Nigeria", "South Africa", "Tanzania", "Tunisia", "Zambia", "Zimbabwe"],
@@ -6,18 +8,13 @@ var continental = {
   "OCEANIA": ["Australia", "Fiji", "French Polynesia", "New Zealand", "Tuvalu"]
 }
 
-getData();
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function1: get data from flask  
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function getData() {
   d3.json(`/getCountryData`, function (countryIno) {
-
-    // var core = { name: "World", children: [] };
-    // core["children"].push({ name: 'EUROPE', children: [] })
-    // core["children"].push({ name: 'AFRICA', children: [] })
-    // core["children"].push({ name: 'AMERICA', children: [] })
-    // core["children"].push({ name: 'ASIA', children: [] })
-    // core["children"].push({ name: 'OCEANIA', children: [] })
-
 
     var core = []
     core.push({ name: 'EUROPE', children: [] })
@@ -31,11 +28,11 @@ function getData() {
       if (value > 7) {
         return value * 1000000
       } else if (value > 6) {
-        return value *10
+        return value * 10
       } else if (value > 5) {
-        return value /1000
+        return value / 1000
       } else {
-        return value/1000000000
+        return value / 1000000000
       }
 
     }
@@ -52,116 +49,25 @@ function getData() {
               item2['children'].push({
                 name: item.country + ":" + nf.format(item.happiestScore),
                 value: getScape(item.happiestScore)
-                // children: [
-                // {
-                //     name: 'population',
-                //     value: item.population
-                // },
-                // {
-                //     name: 'Happiest Score',
-                //     value: item.happiestScore
-                // },
-                // {
-                //     name: 'Populcation Density',
-                //     value: item.pop_den
-                // },
-                // {
-                //     name: 'GDP per capita',
-                //     value: item.gdp_per_capita
-                // },
-                // {
-                //     name: 'Area',
-                //     value: item.countrysize
-                // },
-                // {
-                //     name: 'Growth Rate',
-                //     value: item.growthrate
-                // }
-
-                // ]
               });
             }
-
           });
-
         }
-
       })
     });
 
 
     d3.select("#worldbarchart").style("height", "600px");
     d3.select("#worldbarchart").style("width", "1000px");
-
-    console.log(core);
-
-    showBubble2(core);
-
-
-
+    showBubble(core);
   })
 
 }
 
-
-
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function2: show bubble chart type
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 function showBubble(showData) {
-
-
-  am4core.ready(function () {
-
-    // Themes begin
-    am4core.useTheme(am4themes_material);
-    am4core.useTheme(am4themes_animated);
-    // Themes end
-
-    var chart = am4core.create("worldbarchart", am4plugins_forceDirected.ForceDirectedTree);
-    var networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries())
-
-    chart.data = showData;
-
-    networkSeries.dataFields.value = "value";
-    networkSeries.dataFields.name = "name";
-    networkSeries.dataFields.children = "children";
-    networkSeries.nodes.template.tooltipText = "{name}:{value}";
-    networkSeries.nodes.template.fillOpacity = 1;
-
-    networkSeries.nodes.template.label.text = "{name}"
-    networkSeries.fontSize = 10;
-
-    networkSeries.links.template.strokeWidth = 1;
-
-    var hoverState = networkSeries.links.template.states.create("hover");
-    hoverState.properties.strokeWidth = 3;
-    hoverState.properties.strokeOpacity = 1;
-
-    networkSeries.nodes.template.events.on("over", function (event) {
-      event.target.dataItem.childLinks.each(function (link) {
-        link.isHover = true;
-      })
-      if (event.target.dataItem.parentLink) {
-        event.target.dataItem.parentLink.isHover = true;
-      }
-
-    })
-
-    networkSeries.nodes.template.events.on("out", function (event) {
-      event.target.dataItem.childLinks.each(function (link) {
-        link.isHover = false;
-      })
-      if (event.target.dataItem.parentLink) {
-        event.target.dataItem.parentLink.isHover = false;
-      }
-    })
-
-  });
-
-}
-
-function showBubble2(showData) {
-
-
   am4core.ready(function () {
 
     // Themes begin
@@ -441,3 +347,9 @@ function showBubble2(showData) {
 
   }); // end am4core.ready()
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// program entrance
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+getData();

@@ -1,22 +1,25 @@
 
+
+////////////////////////////////////////////////////
+// function1: while click right arrow 
+////////////////////////////////////////////////////
 function moveRight() {
 
-
+    //get the data from the first list
     var selectElement = document.getElementById("first");
     var optionElements = selectElement.getElementsByTagName("option");
     var len = optionElements.length;
 
-
     if (!(selectElement.selectedIndex == -1)) {
-
+        //add new input to secend list 
         var selectElement2 = document.getElementById("secend");
-
-
         for (var i = 0; i < len; i++) {
             if (selectElement.selectedIndex >= 0) {
                 selectElement2.appendChild(optionElements[selectElement.selectedIndex]);
             }
         }
+
+        //update chart info 
         mutiListChanged();
     } else {
         alert("Please select one！");
@@ -24,7 +27,9 @@ function moveRight() {
 }
 
 
-
+////////////////////////////////////////////////////
+// function2: while click left arrow 
+////////////////////////////////////////////////////
 function moveLeft() {
     var selectElement = document.getElementById("secend");
     var optionElement = selectElement.getElementsByTagName("option");
@@ -41,14 +46,16 @@ function moveLeft() {
             }
 
         }
-
+        //update chart info 
         mutiListChanged();
     } else {
         alert("Please select one！");
     }
 }
 
-
+////////////////////////////////////////////////////
+// function3: get the data from flask interface 
+////////////////////////////////////////////////////
 function mutipleIni() {
 
     var selector5 = d3.select("#first");
@@ -57,14 +64,14 @@ function mutipleIni() {
 
 
     d3.json("/getCountryName", function (countryName) {
-
+        //add 10 country names into left dropdown list
         countryName.slice(0, 10).forEach((instance) => {
             selector6
                 .append("option")
                 .text(instance)
                 .property("value", instance);
         });
-
+        //add the rest country names into left dropdown list
         countryName.slice(11, countryName.length).forEach((instance) => {
             selector5
                 .append("option")
@@ -72,46 +79,33 @@ function mutipleIni() {
                 .property("value", instance);
         });
 
-
+        //update chart info 
         mutiListChanged();
-
-
     });
-
-
-
 }
 
-mutipleIni();
-
-
-
+////////////////////////////////////////////////////
+// function4: update list info
+////////////////////////////////////////////////////
 function mutiListChanged() {
-
-
-
     var selectElement = document.getElementById("secend");
     var optionElement = selectElement.getElementsByTagName("option");
     var len = optionElement.length;
-
-
     var selectCountry = [];
-
-
     if (len > 0) {
         for (i = 0; i < len; i++) {
             selectCountry.push(optionElement[i].value);
         }
-
+        //build the chart
         buildMutipleList(selectCountry);
 
     } else {
         alert("Please add country!!");
     }
-
-
 }
-
+////////////////////////////////////////////////////
+// function5: get data from flask and creat json list for display
+////////////////////////////////////////////////////
 function buildMutipleList(selectCountry) {
 
     d3.json(`/metafindselectcountries/${selectCountry}`, function (countryJsonList) {
@@ -133,17 +127,16 @@ function buildMutipleList(selectCountry) {
 
         d3.select("#mutipleBar").style("height", "400px");
         d3.select("#mutipleBar").style("width", "auto");
-        // d3.select("#mutipleBar").append("h3").text(checkedOption + "Chart");
-
-
+        //build bar chart
         showBarChart(data);
+        //build radar chart
         showRadarChart(data);
-
-
     })
 
-
 }
+////////////////////////////////////////////////////
+// function6: radar chart
+////////////////////////////////////////////////////
 function showRadarChart(data) {
 
     am4core.ready(function () {
@@ -207,7 +200,9 @@ function showRadarChart(data) {
 
     });
 }
-
+////////////////////////////////////////////////////
+// function6: bar chart
+////////////////////////////////////////////////////
 function showBarChart(data) {
     am4core.ready(function () {
 
@@ -250,7 +245,9 @@ function showBarChart(data) {
 
     });
 }
-
+////////////////////////////////////////////////////
+// function7: radio value
+////////////////////////////////////////////////////
 
 function getCheckedRadioValue(radioGroupName) {
     var rads = document.getElementsByName(radioGroupName);
@@ -260,3 +257,5 @@ function getCheckedRadioValue(radioGroupName) {
     return null; // or undefined, or your preferred default for none checked
 }
 
+// program entrance
+mutipleIni();

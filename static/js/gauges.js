@@ -1,3 +1,7 @@
+
+////////////////////////////////////////////////////
+// function : show gauge chart
+////////////////////////////////////////////////////
 function gauges(countryData){
 
   am4core.ready(function() {
@@ -9,10 +13,12 @@ function gauges(countryData){
     var chartMin = 0;
     var chartMax = 8;
     
-    
-    
     var data = {
+
+      //get Happiest Score 
       score: countryData["Happiest Score"],
+
+      //setup the scape 
       gradingData: [
         {
           title: "Worst",
@@ -197,10 +203,6 @@ function gauges(countryData){
       label.fill = am4core.color(matchingGrade.color);
     })
     
-    // setInterval(function() {
-    //     var value = 10;
-    //     hand.showValue(value, 1000, am4core.ease.cubicOut);
-    // }, 0);
     
     }); // end am4core.ready()
 

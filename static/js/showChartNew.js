@@ -75,13 +75,10 @@ function getTop10(sample, option, sortType) {
     // option is key
     var sortedList;
 
-
+    //sort the data
     if (sortType === 0) {
-
         sortedList = sample.sort((a, b) => b[option] - a[option]);
-
     } else {
-
         sortedList = sample.sort((a, b) => a[option] - b[option]);
     }
 
@@ -98,23 +95,12 @@ function getTop10(sample, option, sortType) {
 
 function buildBar(countryInfo, compartion) {
 
-
     checkedValue = getCheckedRadioValue("type");
-
-    
-
-
     if (checkedValue === 'Ascent') {
-
         showData = getTop10(countryInfo, compartion, 0); // ascent 
-
     } else {
-
         showData = getTop10(countryInfo, compartion, 1); //Descend
-
     }
-
-
 
     var traceDisplay1 = [{
         // x value 
@@ -153,13 +139,6 @@ function buildBar(countryInfo, compartion) {
     };
     //Plotly to plot bar chart layout 
     Plotly.newPlot("bar", traceDisplay1, disPlayLayout1, { displayModeBar: false });
-
-
-
-
-
-
-
 }
 
 
@@ -169,7 +148,7 @@ function buildBar(countryInfo, compartion) {
 
 function showbubbleChart(countryInfo, compartion) {
 
-
+    //check radio option
     checkedValue = getCheckedRadioValue("type");
 
     if (checkedValue === 'Ascent') {
@@ -184,11 +163,7 @@ function showbubbleChart(countryInfo, compartion) {
 
 
     var scaleMax = d3.max(showData.map(item => item[compartion]))
-
     showBubbleSize = showData.map(item => item[compartion] / scaleMax * 50)
-
-
-
     //create a trace bubble
     var traceDisplay2 = [{
         x: showData.map(item => item.country), //X axis, show experiment ID
@@ -224,12 +199,7 @@ function showbubbleChart(countryInfo, compartion) {
 function buildBox(newOption, displaySwitch) {
 
     if ((newOption === "gdp_per_capita") && !displaySwitch) {
-
-
-        Plotly.purge("boxChart");
-
-
-
+        Plotly.purge("boxChart");// remove previous chart
     } else if ((newOption === "growthrate") && !displaySwitch) {
         Plotly.purge("boxChart2");
     } else if ((newOption === "happiestScore") && !displaySwitch) {
@@ -266,9 +236,6 @@ function buildBox(newOption, displaySwitch) {
                 default:
                     return '';
             }
-
-
-
         });
     }
 }
@@ -277,16 +244,9 @@ function buildBox(newOption, displaySwitch) {
 // function8: show country info
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 function showInfo(countryName) {
-
-
-
     //lookup the data by experiment name 
     d3.json(`/metadata/${countryName}`, function (countryIno) {
-
-
-
         gauges(countryIno);
-
         // selection variable in order to update info
         var sample_metadata = d3.select("#sample-metadata");
         // clear the html
@@ -307,12 +267,6 @@ function showInfo(countryName) {
         row = sample_metadata.append("p");
         row.text(`Population Density: ${nf.format(countryIno["Population Density"])}km²`);
 
-
-        // Use Object.entries to add each key and value pair to the panel
-        // Object.entries(showJson).forEach(([key, value]) => {
-        //     var row = sample_metadata.append("p");
-        //     row.text(`${key}: ${value}`);
-        // })
     })
 
 }
@@ -331,21 +285,13 @@ function handleSubmit() {
 
     d3.json(`/metafindcountry/${countryInput}`, function (findCountry) {
 
-
-
         if (findCountry["findIt"] === 1) {
-
- 
-            console.log("--------2------------")
-
-            changeCountry(countryInput);
+           changeCountry(countryInput);
             showInfo(countryInput);
 
         } else {
             alert("Sorry, Country not found.");
         }
-
-
     })
 }
 
@@ -372,12 +318,6 @@ function optionChanged(column) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // function12 : when dropdown option change for option
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-// function optionBoxChanged(column) {
-
-//     var newOption = getColumnsName(column);
-
-//     buildBox(newOption);
-// }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -391,13 +331,9 @@ function buildCharts(compartion) {
         // build bubble Chart
         showbubbleChart(countryInfo, compartion);
         //build box Chart
-
         buildBox('gdp_per_capita', true)
         buildBox('growthrate', true);
         buildBox('happiestScore', true);
-
-
-
     });
 
 }
@@ -420,14 +356,8 @@ function init() {
                 .text(instance)
                 .property("value", instance);
         });
-
-
-
         const defaultCompartion = compartion[0];
-
         buildCharts(defaultCompartion);
-
-
     });
 
     var selector2 = d3.select("#selCountry");
@@ -448,32 +378,30 @@ function init() {
 
 }
 
-
-
-
-init();
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function15: enable box chart1 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 function checkboxChanged1(value) {
-
-
     buildBox('gdp_per_capita', value)
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function15: enable box chart2
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 function checkboxChanged2(value) {
 
     buildBox('growthrate', value);
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// function15: enable box chart3 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 function checkboxChanged3(value) {
-
     buildBox('happiestScore', value);
 }
 
-
-
-
-
-
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// program entrance
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+init();
 
 
 
