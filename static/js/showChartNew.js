@@ -100,10 +100,13 @@ function buildBar(countryInfo, compartion) {
 
 
     checkedValue = getCheckedRadioValue("type");
+
+    
+
+
     if (checkedValue === 'Ascent') {
 
         showData = getTop10(countryInfo, compartion, 0); // ascent 
-
 
     } else {
 
@@ -112,7 +115,6 @@ function buildBar(countryInfo, compartion) {
     }
 
 
-    // showData = getTop10(countryInfo, compartion);
 
     var traceDisplay1 = [{
         // x value 
@@ -151,6 +153,12 @@ function buildBar(countryInfo, compartion) {
     };
     //Plotly to plot bar chart layout 
     Plotly.newPlot("bar", traceDisplay1, disPlayLayout1, { displayModeBar: false });
+
+
+
+
+
+
 
 }
 
@@ -276,6 +284,9 @@ function showInfo(countryName) {
     d3.json(`/metadata/${countryName}`, function (countryIno) {
 
 
+
+        gauges(countryIno);
+
         // selection variable in order to update info
         var sample_metadata = d3.select("#sample-metadata");
         // clear the html
@@ -382,8 +393,8 @@ function buildCharts(compartion) {
         //build box Chart
 
         buildBox('gdp_per_capita', true)
-        // buildBox('growthrate', true);
-        // buildBox('happiestScore', true);
+        buildBox('growthrate', true);
+        buildBox('happiestScore', true);
 
 
 

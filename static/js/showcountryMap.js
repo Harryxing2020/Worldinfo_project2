@@ -38,8 +38,6 @@ function changeCountry(countryName) {
       address = address[0]
     }
 
-    console.log("-----------4-----------------------------")
-    // myMap.setView(new L.LatLng(address[1], address[0]), 3);
 
     myMap.setView({lat:address[1], lng:address[0]}, 3)
   }

@@ -25,7 +25,7 @@ for index, row in worldinfoDF.iterrows():
     }
     country_info.append(populcation_dict)
 #################################################
-# Database end
+# Database endd
 #################################################
 @app.route("/")
 def entrance():
@@ -64,7 +64,8 @@ def getCountryData(country):
         'Population': currentCountry.iloc[0]["population"],
         'Growth Rate': currentCountry.iloc[0]["growthrate"],
         'Area': currentCountry.iloc[0]["countrysize"],
-         'Population Density': currentCountry.iloc[0]["pop_den"]
+         'Population Density': currentCountry.iloc[0]["pop_den"],
+         'Happiest Score': currentCountry.iloc[0]["happiestScore"]
     }
 
 

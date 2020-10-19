@@ -7,8 +7,7 @@ function moveRight() {
     var len = optionElements.length;
 
 
-    if (!(selectElement.selectedIndex == -1))   
-    {
+    if (!(selectElement.selectedIndex == -1)) {
 
         var selectElement2 = document.getElementById("secend");
 
@@ -18,13 +17,14 @@ function moveRight() {
                 selectElement2.appendChild(optionElements[selectElement.selectedIndex]);
             }
         }
+        mutiListChanged();
     } else {
         alert("Please select one！");
     }
 }
 
 
- 
+
 function moveLeft() {
     var selectElement = document.getElementById("secend");
     var optionElement = selectElement.getElementsByTagName("option");
@@ -41,6 +41,8 @@ function moveLeft() {
             }
 
         }
+
+        mutiListChanged();
     } else {
         alert("Please select one！");
     }
@@ -50,15 +52,33 @@ function moveLeft() {
 function mutipleIni() {
 
     var selector5 = d3.select("#first");
+
+    var selector6 = d3.select("#secend");
+
+
     d3.json("/getCountryName", function (countryName) {
-        countryName.forEach((instance) => {
+
+        countryName.slice(0, 10).forEach((instance) => {
+            selector6
+                .append("option")
+                .text(instance)
+                .property("value", instance);
+        });
+
+        countryName.slice(11, countryName.length).forEach((instance) => {
             selector5
                 .append("option")
                 .text(instance)
                 .property("value", instance);
         });
 
+
+        mutiListChanged();
+
+
     });
+
+
 
 }
 
@@ -68,6 +88,8 @@ mutipleIni();
 
 function mutiListChanged() {
 
+
+
     var selectElement = document.getElementById("secend");
     var optionElement = selectElement.getElementsByTagName("option");
     var len = optionElement.length;
@@ -75,12 +97,14 @@ function mutiListChanged() {
 
     var selectCountry = [];
 
+
     if (len > 0) {
         for (i = 0; i < len; i++) {
             selectCountry.push(optionElement[i].value);
         }
 
         buildMutipleList(selectCountry);
+
     } else {
         alert("Please add country!!");
     }
@@ -93,99 +117,139 @@ function buildMutipleList(selectCountry) {
     d3.json(`/metafindselectcountries/${selectCountry}`, function (countryJsonList) {
 
         var checkedOption = getCheckedRadioValue("radio2");
-        var checkedColor = getCheckedRadioValue("radio3");
         var checkedChart = getCheckedRadioValue("radio4");
-
-
         countryJsonList = countryJsonList.sort((a, b) => b[checkedOption] - a[checkedOption]);
 
-        var nf = Intl.NumberFormat();
-
-        // // /metadata/<country>
-        var traceDisplay1 = [{
-            // x value 
-            x: countryJsonList.map(item => item.country),
-            // y value 
-            y: countryJsonList.map(item => {
-
-                if (checkedOption === 'Growth Rate') {
-
-                    return nf.format(item[checkedOption] * 100)
-
-                } else {
-
-                    return nf.format(item[checkedOption])
-                }
-            }),
-            // set y value as the lable 
-            labels: countryJsonList.map(item => {
-
-                if (checkedOption === 'Growth Rate') {
-
-                    return nf.format(item[checkedOption] * 100) + '%'
-
-                } else {
-
-                    return nf.format(item[checkedOption])
-                }
-            }),
-            //show label for text display 
-            text: countryJsonList.map(item => {
-
-                if (checkedOption === 'Growth Rate') {
-
-                    return  item.country + nf.format(item[checkedOption] * 100) + '%'
-
-                } else if (checkedOption === 'GDP per Capita') {
-
-                    return   item.country + " $"+ nf.format(item[checkedOption])
-                }else if (checkedOption === 'Populcation Density') {
-
-                    return   item.country + nf.format(item[checkedOption]) + "km²"
-                } else {
-
-                    return   item.country + nf.format(item[checkedOption])
-                }
-            }),
-
-            // GDP per Capita
-            // Happiest Score
-            // Populcation Density
-            // Growth Rate
-            //show bar chart
-            type: checkedChart,
-            //set the orient
-            // orientation: "h",
-
-            marker: {
-                color: checkedColor,
-                opacity: 0.7,
+        var data = countryJsonList.map(item => {
+            return {
+                "country": item.country,
+                visits: item[checkedOption],
+                value: item[checkedOption]
             }
+        })
 
-        }];
-        // Bar layout
-        var disPlayLayout1 = {
-            title: { text: checkedOption + "Chart" },
-            autosize: true,
-            // height: 400,
-            // width: 400,
-            margin: {
-                l: 100,
-                r: 10,
-                b: 20,
-                t: 30,
-                pad: 0
-            },
-            showlegend: false
-        };
-        //Plotly to plot bar chart layout 
-        Plotly.newPlot("mutipleBar", traceDisplay1, disPlayLayout1, { displayModeBar: false });
+        d3.select("#mutipleradar").style("height", "400px");
+        d3.select("#mutipleradar").style("width", "500px");
+
+        d3.select("#mutipleBar").style("height", "400px");
+        d3.select("#mutipleBar").style("width", "auto");
+        // d3.select("#mutipleBar").append("h3").text(checkedOption + "Chart");
+
+
+        showBarChart(data);
+        showRadarChart(data);
+
+
     })
 
 
 }
+function showRadarChart(data) {
+
+    am4core.ready(function () {
+
+        // Themes begin
+        am4core.useTheme(am4themes_material);
+        am4core.useTheme(am4themes_animated);
+        // Themes end
+
+        var chart = am4core.create("mutipleradar", am4charts.RadarChart);
+
+        chart.data = data;
+
+        chart.innerRadius = am4core.percent(40)
+
+        var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.renderer.grid.template.location = 0;
+        categoryAxis.dataFields.category = "country";
+        categoryAxis.renderer.minGridDistance = 60;
+        categoryAxis.renderer.inversed = true;
+        categoryAxis.renderer.labels.template.location = 0.5;
+        categoryAxis.renderer.grid.template.strokeOpacity = 0.08;
+
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        valueAxis.min = 0;
+        valueAxis.extraMax = 0.1;
+        valueAxis.renderer.grid.template.strokeOpacity = 0.08;
+
+        chart.seriesContainer.zIndex = -10;
 
 
+        var series = chart.series.push(new am4charts.RadarColumnSeries());
+        series.dataFields.categoryX = "country";
+        series.dataFields.valueY = "visits";
+        series.tooltipText = "{valueY.value}"
+        series.columns.template.strokeOpacity = 0;
+        series.columns.template.radarColumn.cornerRadius = 5;
+        series.columns.template.radarColumn.innerCornerRadius = 0;
+
+        chart.zoomOutButton.disabled = true;
+
+        // as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
+        series.columns.template.adapter.add("fill", (fill, target) => {
+            return chart.colors.getIndex(target.dataItem.index);
+        });
+
+        setInterval(() => {
+            am4core.array.each(chart.data, (item) => {
+                item.visits *= Math.random() * 0.5 + 0.5;
+                item.visits += 10;
+            })
+            chart.invalidateRawData();
+        }, 2000)
+
+        categoryAxis.sortBySeries = series;
+
+        chart.cursor = new am4charts.RadarCursor();
+        chart.cursor.behavior = "none";
+        chart.cursor.lineX.disabled = true;
+        chart.cursor.lineY.disabled = true;
+
+    });
+}
+
+function showBarChart(data) {
+    am4core.ready(function () {
+
+        // Themes begin
+        am4core.useTheme(am4themes_material);
+        am4core.useTheme(am4themes_animated);
+        // Themes end
+
+        var chart = am4core.create("mutipleBar", am4charts.XYChart);
+        chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+
+        chart.data = data;
+        var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.renderer.grid.template.location = 0;
+        categoryAxis.dataFields.category = "country";
+        categoryAxis.renderer.minGridDistance = 40;
+
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+        var series = chart.series.push(new am4charts.CurvedColumnSeries());
+        series.dataFields.categoryX = "country";
+        series.dataFields.valueY = "value";
+        series.tooltipText = "{valueY.value}"
+        series.columns.template.strokeOpacity = 0;
+
+        series.columns.template.fillOpacity = 0.75;
+
+        var hoverState = series.columns.template.states.create("hover");
+        hoverState.properties.fillOpacity = 1;
+        hoverState.properties.tension = 0.4;
+
+        chart.cursor = new am4charts.XYCursor();
+
+        // Add distinctive colors for each column using adapter
+        series.columns.template.adapter.add("fill", function (fill, target) {
+            return chart.colors.getIndex(target.dataItem.index);
+        });
+
+        chart.scrollbarX = new am4core.Scrollbar();
+
+    });
+}
 
 
 function getCheckedRadioValue(radioGroupName) {
