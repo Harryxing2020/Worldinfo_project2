@@ -1,5 +1,5 @@
 Publish website
-aws: http://harryxing2021.us-west-1.elasticbeanstalk.com/
+aws: http://worldeconomy.us-west-1.elasticbeanstalk.com/
 
 
 # project 2
